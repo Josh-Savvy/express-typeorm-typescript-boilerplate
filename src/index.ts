@@ -1,4 +1,5 @@
 import express from "express";
+import type { Request, Response } from "express";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import dotenv from "dotenv";
@@ -18,6 +19,12 @@ app.set("trust proxy", true)
 	// todo: rate limiter
 	// todo: api documentation middleware
 	.use(routes);
+
+// capture all 404 errors
+app.use(function (request: Request, response: Response) {
+	// Todo: logger
+	response.status(404).json({ message: "Route not found", path: request.path }).end();
+});
 
 // Start server
 createConnection(dbConfig)
